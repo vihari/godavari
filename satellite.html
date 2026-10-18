@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Godavari Water Watch | Rajahmundry Satellite Audit</title>
+  <meta name="description"
+    content="Water quality audit of 7 bathing ghats along the Godavari River in Rajahmundry ahead of Pushkaram.">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Leaflet CSS for Satellite Mapping -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+
+<body>
+
+  <!-- Top Header with Audit Badges & Navigation -->
+  <header class="top-bar">
+    <div class="brand-section">
+      <div class="brand-title" data-i18n="brand.title">GODAVARI WATER WATCH</div>
+      <span class="brand-tag" data-i18n="brand.tag">Rajamahendravaram</span>
+      <div class="audit-badge-group">
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          <span data-i18n="audit.label">Audit: 12 Sept 2026</span>
+        </div>
+        <div class="next-audit-indicator">
+          <span><span data-i18n="audit.next">Next Audit:</span> <strong data-i18n="audit.nextDate">First week of Nov
+              2026</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button onclick="toggleLang()" class="btn-nav btn-lang-toggle" id="lang-toggle-btn"
+        data-i18n="lang.toggle">తెలుగు</button>
+      <a href="Results.pdf" target="_blank" class="btn-nav btn-nav-outline" data-i18n="nav.pdf">
+        Certified Lab PDF
+      </a>
+      <a href="index.html" class="btn-nav btn-nav-primary" data-i18n="nav.report">
+        &larr; Read Report &amp; 3 Demands
+      </a>
+    </div>
+  </header>
+
+  <!-- Near Full-Screen Viewport -->
+  <div class="app-viewport">
+    <!-- Full-Screen Satellite Map -->
+    <div id="godavari-satellite-map"></div>
+
+    <!-- Floating Right Inspector Panel -->
+    <aside class="inspector-panel" id="inspector-panel">
+      <!-- Mobile Drawer Handle -->
+      <div class="mobile-drawer-handle" id="drawer-toggle"></div>
+
+      <!-- Panel Top: Stepper & Mobile Quick Summary -->
+      <div class="panel-top" id="panel-top-bar">
+        <div class="stepper-label">
+          <span data-i18n="stepper.label">BATHING GHATS &amp; DRAINAGE OUTFALLS</span>
+          <span data-i18n="stepper.range">SELECT 1 &ndash; 7</span>
+        </div>
+        <div class="ghat-stepper" id="stepper-container">
+          <!-- Stepper buttons 1 to 7 injected via JavaScript -->
+        </div>
+
+        <!-- Mobile Peek Summary (Shown on mobile when drawer is collapsed) -->
+        <div class="mobile-peek-summary" id="mobile-peek-summary">
+          <div class="peek-text">
+            <span class="peek-title" id="peek-ghat-name">Kateru Bathing Ghat</span>
+            <span class="peek-verdict" id="peek-verdict">Safe for Bathing &amp; Drinking</span>
+          </div>
+          <button class="peek-toggle-btn" id="peek-toggle-btn" aria-label="Toggle details">
+            <span class="peek-btn-text" data-i18n="peek.btn.open">View Lab Details</span>
+            <span class="peek-btn-arrow">&#9650;</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dedicated Scrollable Content Area -->
+      <div class="panel-scroll" id="panel-scroll-area">
+        <!-- Site Photo & Evidence Video Action -->
+        <div class="site-photo-card">
+          <img src="images/kateru_ghat.jpg" alt="Site Photo" class="site-photo-img" id="site-photo">
+          <div class="photo-badge-overlay">
+            <span style="font-weight:700;" data-i18n="photo.badge">Field Inspection</span>
+            <span id="photo-coords"
+              style="font-family:'JetBrains Mono', monospace; font-size:0.68rem; color:#94a3b8;">17.0407°N, 81.7637°E
+              &bull; Sept 12</span>
+          </div>
+        </div>
+
+        <div class="video-evidence-bar">
+          <a href="videos/kateru_sample.mp4" target="_blank" class="btn-video-evidence" id="ghat-video-link">
+            <span class="video-icon">&#9658;</span>
+            <span data-i18n="video.btn">Watch Sample Collection Clip</span>
+            <!-- <span class="video-subtext">(Certified Field Video)</span> -->
+          </a>
+        </div>
+
+        <!-- Identity -->
+        <div class="ghat-identity">
+          <div class="ghat-tag-row">
+            <span class="point-pill" id="point-tag">POINT 1 &bull; SV/26/6170</span>
+          </div>
+          <h2 class="ghat-name" id="ghat-name">Kateru Bathing Ghat</h2>
+          <div class="ghat-telugu" id="ghat-telugu">కాతేరు స్నానాల ఘాట్ (గండి పోచమ్మ గుడి)</div>
+        </div>
+
+        <!-- Drinking & Bathing Fitness Cards -->
+        <div class="fitness-stack">
+          <!-- Drinking Fitness -->
+          <div class="fitness-card">
+            <div class="fitness-card-header">
+              <span class="fitness-type" data-i18n="fitness.drinking">Drinking / Achamanam</span>
+              <span class="fitness-badge badge-fit" id="drinking-badge">FIT</span>
+            </div>
+            <div class="fitness-reason" id="drinking-reason">
+              Meets CPCB Category A drinking standards. Dissolved Oxygen is excellent at 6.3 mg/L, Total Coliform is low
+              at 3.0 CFU/100mL, and E. coli is absent.
+            </div>
+          </div>
+
+          <!-- Bathing Fitness -->
+          <div class="fitness-card">
+            <div class="fitness-card-header">
+              <span class="fitness-type" data-i18n="fitness.bathing">Bathing / Holy Dip</span>
+              <span class="fitness-badge badge-fit" id="bathing-badge">FIT FOR BATHING</span>
+            </div>
+            <div class="fitness-reason" id="bathing-reason">
+              Surpasses Category B outdoor bathing requirements by a wide margin (DO 6.3 mg/L vs &ge; 5.0 required;
+              Coliform 3 vs 500 ceiling).
+            </div>
+          </div>
+        </div>
+
+        <!-- Tested Parameters Strip -->
+        <div class="params-box">
+          <div
+            style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:#94a3b8; margin-bottom:8px; font-weight:700;"
+            data-i18n="params.label">
+            Certified Lab Parameters (Sept 12, 2026)
+          </div>
+          <div class="params-grid">
+            <div class="param-col">
+              <span class="param-val" id="metric-do">6.3 mg/L</span>
+              <span class="param-lbl" data-i18n="param.do">D.O. (&ge;5.0)</span>
+            </div>
+            <div class="param-col">
+              <span class="param-val" id="metric-ph">7.77</span>
+              <span class="param-lbl" data-i18n="param.ph">pH (6.5-8.5)</span>
+            </div>
+            <div class="param-col">
+              <span class="param-val" id="metric-coliform">3.0 CFU</span>
+              <span class="param-lbl" data-i18n="param.coliform">Coliform (&le;500)</span>
+            </div>
+            <div class="param-col">
+              <span class="param-val" id="metric-cod">&lt;10.0</span>
+              <span class="param-lbl" data-i18n="param.cod">COD mg/L</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Footer -->
+        <div class="panel-footer-action">
+          <span style="font-size:0.75rem; color:#64748b;">Ref: SV/VP/26-09/01–07</span>
+          <a href="index.html" style="font-size:0.82rem; font-weight:700; color:#38bdf8;" data-i18n="panel.footer.link">
+            Read Pushkaram Investigation &rarr;
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="data.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
