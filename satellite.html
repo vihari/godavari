@@ -67,8 +67,8 @@
         <!-- Mobile Peek Summary (Shown on mobile when drawer is collapsed) -->
         <div class="mobile-peek-summary" id="mobile-peek-summary">
           <div class="peek-text">
-            <span class="peek-title" id="peek-ghat-name">Kateru Bathing Ghat</span>
-            <span class="peek-verdict" id="peek-verdict">Safe for Bathing &amp; Drinking</span>
+            <span class="peek-title" id="peek-ghat-name">1. Kateru Bathing Ghat</span>
+            <span class="peek-verdict" id="peek-verdict">Safe for Bathing &amp; Occasional Sipping</span>
           </div>
           <button class="peek-toggle-btn" id="peek-toggle-btn" aria-label="Toggle details">
             <span class="peek-btn-text" data-i18n="peek.btn.open">View Lab Details</span>
@@ -85,7 +85,7 @@
           <div class="photo-badge-overlay">
             <span style="font-weight:700;" data-i18n="photo.badge">Field Inspection</span>
             <span id="photo-coords"
-              style="font-family:'JetBrains Mono', monospace; font-size:0.68rem; color:#94a3b8;">17.0407°N, 81.7637°E
+              style="font-family:'JetBrains Mono', monospace; font-size:0.68rem; color:#e8d5b4;">17.0407°N, 81.7637°E
               &bull; Sept 12</span>
           </div>
         </div>
@@ -112,8 +112,8 @@
           <!-- Drinking Fitness -->
           <div class="fitness-card">
             <div class="fitness-card-header">
-              <span class="fitness-type" data-i18n="fitness.drinking">Drinking / Achamanam</span>
-              <span class="fitness-badge badge-fit" id="drinking-badge">FIT</span>
+              <span class="fitness-type" data-i18n="fitness.drinking">Occasional Sipping (Achamanam)</span>
+              <span class="fitness-badge badge-fit" id="drinking-badge">SAFE FOR SIPPING</span>
             </div>
             <div class="fitness-reason" id="drinking-reason">
               Meets CPCB Category A drinking standards. Dissolved Oxygen is excellent at 6.3 mg/L, Total Coliform is low
@@ -125,7 +125,7 @@
           <div class="fitness-card">
             <div class="fitness-card-header">
               <span class="fitness-type" data-i18n="fitness.bathing">Bathing / Holy Dip</span>
-              <span class="fitness-badge badge-fit" id="bathing-badge">FIT FOR BATHING</span>
+              <span class="fitness-badge badge-fit" id="bathing-badge">SAFE FOR BATHING</span>
             </div>
             <div class="fitness-reason" id="bathing-reason">
               Surpasses Category B outdoor bathing requirements by a wide margin (DO 6.3 mg/L vs &ge; 5.0 required;
@@ -136,9 +136,7 @@
 
         <!-- Tested Parameters Strip -->
         <div class="params-box">
-          <div
-            style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:#94a3b8; margin-bottom:8px; font-weight:700;"
-            data-i18n="params.label">
+          <div class="params-section-label" style="font-weight:700;" data-i18n="params.label">
             Certified Lab Parameters (Sept 12, 2026)
           </div>
           <div class="params-grid">
@@ -163,8 +161,8 @@
 
         <!-- Panel Footer -->
         <div class="panel-footer-action">
-          <span style="font-size:0.75rem; color:#64748b;">Ref: SV/VP/26-09/01–07</span>
-          <a href="index.html" style="font-size:0.82rem; font-weight:700; color:#38bdf8;" data-i18n="panel.footer.link">
+          <span style="font-size:0.75rem; color:var(--ink-muted); font-family:var(--font-mono);">Ref: SV/VP/26-09/01–07</span>
+          <a href="index.html" style="font-size:0.82rem; font-weight:700; color:var(--brass-accent);" data-i18n="panel.footer.link">
             Read Pushkaram Investigation &rarr;
           </a>
         </div>

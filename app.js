@@ -183,13 +183,17 @@ function selectGhat(ghatId) {
     }
   }
 
+  const isTe = typeof CURRENT_LANG !== 'undefined' && CURRENT_LANG === 'te';
+  const shortTeName = ghat.teluguName ? ghat.teluguName.split('(')[0].trim() : ghat.name;
+  const displayTitle = isTe ? shortTeName : ghat.name;
+
   // Populate Mobile Peek Summary
   const peekName = document.getElementById('peek-ghat-name');
   const peekVerdict = document.getElementById('peek-verdict');
-  if (peekName) peekName.innerText = `${ghat.pointNo}. ${ghat.name}`;
+  if (peekName) peekName.innerText = `${ghat.pointNo}. ${displayTitle}`;
   if (peekVerdict) {
-    peekVerdict.innerText = ghat.overallVerdict;
-    peekVerdict.style.color = ghat.statusTheme === 'hazard' ? '#ff8787' : (ghat.statusTheme === 'caution' ? 'var(--warn-sienna)' : 'var(--safe-green)');
+    peekVerdict.innerText = (isTe && ghat.overallVerdictTe) ? ghat.overallVerdictTe : ghat.overallVerdict;
+    peekVerdict.style.color = ghat.statusTheme === 'hazard' ? 'var(--hazard-red)' : (ghat.statusTheme === 'caution' ? 'var(--warn-sienna)' : 'var(--safe-green)');
   }
 
   const photo = document.getElementById('site-photo');
@@ -223,18 +227,18 @@ function selectGhat(ghatId) {
     }
   }
   if (photoCoords) photoCoords.innerText = `${ghat.lat.toFixed(4)}°N, ${ghat.lon.toFixed(4)}°E · Sept 12`;
-  if (pointTag) pointTag.innerText = `POINT ${ghat.pointNo} · ${ghat.sampleCode}`;
-  if (nameEl) nameEl.innerText = ghat.name;
-  if (teluguEl) teluguEl.innerText = `${ghat.teluguName} · ${ghat.landmark}`;
+  if (pointTag) pointTag.innerText = `${isTe ? 'పాయింట్' : 'POINT'} ${ghat.pointNo} · ${ghat.sampleCode}`;
+  if (nameEl) nameEl.innerText = displayTitle;
+  if (teluguEl) teluguEl.innerText = isTe ? `${ghat.teluguName} · ${ghat.name}` : `${ghat.teluguName} · ${ghat.landmark}`;
 
   // Drinking Fitness
   const drinkCard = drinkBadge ? drinkBadge.closest('.fitness-card') : null;
   if (drinkBadge) {
     drinkBadge.className = `fitness-badge ${ghat.drinkingFitness.badgeClass}`;
-    const fitLabel = typeof t === 'function' ? t('verdict.fit.drink') : 'FIT (WITH DISINFECTION)';
+    const fitLabel = typeof t === 'function' ? t('verdict.fit.drink') : 'SAFE FOR SIPPING';
     const unfitLabel = ghat.pointNo === 4
-      ? (typeof t === 'function' ? t('verdict.hazard') : 'HAZARDOUS')
-      : (typeof t === 'function' ? t('verdict.unfit.drink') : 'UNFIT FOR DIRECT SIPPING');
+      ? (typeof t === 'function' ? t('verdict.hazard') : 'UNSAFE / HAZARD')
+      : (typeof t === 'function' ? t('verdict.unfit.drink') : 'UNFIT FOR SIPPING');
     drinkBadge.innerText = ghat.drinkingFitness.isFit ? fitLabel : unfitLabel;
   }
   if (drinkCard) {
@@ -243,13 +247,17 @@ function selectGhat(ghatId) {
     else if (ghat.drinkingFitness.badgeClass === 'badge-hazard') drinkCard.classList.add('card-hazard');
     else drinkCard.classList.add('card-warn');
   }
-  if (drinkReason) drinkReason.innerText = ghat.drinkingFitness.reason;
+  if (drinkReason) {
+    drinkReason.innerText = (isTe && ghat.drinkingFitness.reasonTe !== undefined)
+      ? ghat.drinkingFitness.reasonTe
+      : (ghat.drinkingFitness.reason || '');
+  }
 
   // Bathing Fitness
   const bathCard = bathBadge ? bathBadge.closest('.fitness-card') : null;
   if (bathBadge) {
     bathBadge.className = `fitness-badge ${ghat.bathingFitness.badgeClass}`;
-    const bathFitLabel = typeof t === 'function' ? t('verdict.fit.bathing') : 'FIT FOR BATHING (SNANAM)';
+    const bathFitLabel = typeof t === 'function' ? t('verdict.fit.bathing') : 'SAFE FOR BATHING';
     const bathUnfitLabel = typeof t === 'function' ? t('verdict.unfit.bathing') : 'UNSAFE FOR BATHING';
     bathBadge.innerText = ghat.bathingFitness.isFit ? bathFitLabel : bathUnfitLabel;
   }
@@ -259,7 +267,12 @@ function selectGhat(ghatId) {
     else if (ghat.bathingFitness.badgeClass === 'badge-hazard') bathCard.classList.add('card-hazard');
     else bathCard.classList.add('card-warn');
   }
-  if (bathReason) bathReason.innerText = ghat.bathingFitness.reason;
+  if (bathReason) {
+    bathReason.innerText = (isTe && ghat.bathingFitness.reasonTe !== undefined)
+      ? ghat.bathingFitness.reasonTe
+      : (ghat.bathingFitness.reason || '');
+  }
+  updateDrawerButtonState();
 
   // Tested Parameters Strip
   if (doEl) doEl.innerText = ghat.metrics.do;
